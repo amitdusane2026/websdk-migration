@@ -1,0 +1,22 @@
+---
+title: "Cookie reference"
+seotitle: "Cookies & CMP Reference for the Web SDK"
+description: "Which cookies change with the Web SDK and how to re-teach your CMP after migrating from AppMeasurement."
+slug: "cookies"
+type: kb
+weight: 317
+params:
+  group: reference
+  grouplabel: "Reference"
+  hasfull: false
+---
+<p>The Web SDK uses a different cookie family than AppMeasurement, so your consent banner's cookie inventory needs re-teaching.</p>
+<table class="mini-tbl">
+<tbody><tr><td>AMCV_&lt;org&gt;</td><td>Legacy, ECID store; read by idMigrationEnabled during transition</td></tr>
+<tr><td>s_sq</td><td>Legacy, Activity Map clicks; retired under Web SDK</td></tr>
+<tr><td>demdex</td><td>Legacy third-party, cross-device / CORE ID</td></tr>
+<tr><td>kndctr_&lt;org&gt;_identity</td><td>Web SDK, ECID, always first-party on your domain</td></tr>
+<tr><td>kndctr_&lt;org&gt;_consent</td><td>Web SDK, consent preference; written regardless of choice</td></tr>
+<tr><td>kndctr_&lt;org&gt;_cluster</td><td>Web SDK, Edge region routing</td></tr>
+</tbody></table>
+<p><b>For your migration:</b> add the <code>kndctr_*</code> family to your CMP<a class="cite" href="/web-sdk-migration/references/#ref-9" data-ref="9">[9]</a>'s categorisation and retire the obsolete legacy entries for migrated scopes.</p>

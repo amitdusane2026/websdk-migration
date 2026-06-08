@@ -1,0 +1,18 @@
+{{ define "main" }}
+  <h1 class="hero-title">Adobe analytics, <span class="arrow">→</span> done right.</h1>
+  <p class="hero-sub">{{ .Content | plainify }}</p>
+  <span class="hero-role">Adobe Experience Platform · Analytics · Customer Journey Analytics</span>
+
+  <div class="note">Phase&nbsp;2 scaffold: this is the <b>site front page</b> — the common home for the whole website, distinct from the migration guide's own landing. Branding and structure are real; the guide's content is lifted in Phase&nbsp;3.</div>
+
+  <h2>What's here</h2>
+  <div class="sec-grid">
+    {{ range .Site.Sections }}
+      <a class="sec-card" href="{{ .RelPermalink }}">
+        <div class="st">{{ .Title }}</div>
+        <div class="sd">{{ with .Description }}{{ . }}{{ else }}{{ .Params.cardnote }}{{ end }}</div>
+        <div class="meta">{{ if .Pages }}{{ .Pages.Len }} page{{ if ne .Pages.Len 1 }}s{{ end }}{{ else }}13 steps · 24 topics · 42 refs — arriving Phase&nbsp;3{{ end }}</div>
+      </a>
+    {{ end }}
+  </div>
+{{ end }}

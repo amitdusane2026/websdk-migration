@@ -1,0 +1,8 @@
+<footer class="site">
+  <div class="wrap">
+    <span>&copy; {{ now.Year }} <b>{{ .Site.Params.author }}</b></span>
+    <span class="dot">·</span><span>{{ .Site.Params.jobTitle }}</span>
+    {{ with .Site.Params.linkedin }}<span class="dot">·</span><a href="{{ . }}" rel="me noopener" target="_blank">LinkedIn</a>{{ end }}
+    <span class="dot">·</span><span><em>Share freely, attribute fairly.</em></span>
+  </div>
+</footer>

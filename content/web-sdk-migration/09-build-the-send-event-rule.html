@@ -1,0 +1,59 @@
+---
+title: "Build the Send Event rule"
+seotitle: "Build the Send Event Rule in Adobe Web SDK"
+description: "Configure the sendEvent rule and fix the rule-order race condition when migrating Adobe Analytics to the Web SDK."
+slug: "build-the-send-event-rule"
+weight: 9
+type: step
+params:
+  stepnum: 9
+  rebalanced: true
+  kbids: ["ruleorder"]
+---
+<div class="narrative">In the old world, two functions did your sending: <code>s.t()</code> for page views and <code>s.tl()</code> for clicks, each firing its own beacon. The Web SDK replaces both with a single command, <code>sendEvent</code>, that carries the payload you just assembled to the Edge. In Launch this becomes a rule with two actions: one that fills your variable object, one that sends it. The entire art of this step is making those two happen <b>in that order</b>, because Launch will cheerfully fire the send before the variables are set if you let it.</div><div class="why-row"><span class="wl">Why?</span><a class="why" href="/web-sdk-migration/kb/ruleorder/" data-kb="ruleorder">Why rule order matters <span class="arr">↗</span></a></div><div class="actionblock"><div class="abh">What to do</div><div class="astep"><div class="an">1</div><div>
+  <div class="al"><span class="lbl">Where</span> <span class="path">Tags › Rules › Add Rule</span></div>
+  <div class="al"><span class="lbl">Do</span> Event = <b>Core › Window Loaded</b> (a page view). For clicks, use the relevant interaction event.</div>
+</div></div>
+<div class="astep"><div class="an">2</div><div>
+  <div class="al"><span class="lbl">Do</span> Action 1 = <b>AEP Web SDK › Update Variable</b> → target <code>XDM - Global</code> (replaces "Adobe Analytics, Set Variables").</div>
+</div></div>
+<div class="astep"><div class="an">3</div><div>
+  <div class="al"><span class="lbl">Do</span> Action 2 = <b>AEP Web SDK › Send Event</b> (replaces "Send Beacon")<a class="cite" href="/web-sdk-migration/references/#ref-31" data-ref="31">[31]</a>.</div>
+  <div class="al"><span class="lbl">Value</span> Type <code>web.webpagedetails.pageViews</code> (page views) · <code>web.webinteraction.linkClicks</code> (clicks)<a class="cite" href="/web-sdk-migration/references/#ref-33" data-ref="33">[33]</a> · data <code>%XDM - Global%</code>.</div>
+</div></div></div><figure class="fig-svg"><svg viewBox="0 0 720 296" role="img" aria-label="Two beacons collapse into one ordered sendEvent">
+<defs>
+<marker id="ahA2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="var(--accent)"></path></marker>
+<marker id="ahM2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="var(--faint)"></path></marker>
+</defs>
+<!-- before -->
+<text x="118" y="34" text-anchor="middle" font-size="12" font-weight="700" letter-spacing=".4" fill="var(--muted)">BEFORE  ·  AppMeasurement</text>
+<rect x="40" y="70" width="156" height="52" rx="8" fill="var(--bg)" stroke="var(--line)" stroke-width="1.5"></rect>
+<text x="56" y="94" font-size="13" font-weight="700" class="mn">s.t()</text>
+<text x="56" y="111" font-size="10" fill="var(--muted)">page-view beacon</text>
+<rect x="40" y="150" width="156" height="52" rx="8" fill="var(--bg)" stroke="var(--line)" stroke-width="1.5"></rect>
+<text x="56" y="174" font-size="13" font-weight="700" class="mn">s.tl()</text>
+<text x="56" y="191" font-size="10" fill="var(--muted)">link beacon</text>
+<line x1="196" y1="96" x2="232" y2="120" stroke="var(--faint)" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ahM2)"></line>
+<line x1="196" y1="176" x2="232" y2="150" stroke="var(--faint)" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ahM2)"></line>
+<text x="250" y="139" font-size="22" fill="var(--accent)">→</text>
+<!-- after -->
+<text x="486" y="34" text-anchor="middle" font-size="12" font-weight="700" letter-spacing=".4" fill="var(--accent)">AFTER  ·  Web SDK</text>
+<rect x="300" y="64" width="280" height="62" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6"></rect>
+<rect x="500" y="74" width="68" height="20" rx="10" fill="var(--bg)" stroke="var(--accent-line)" stroke-width="1.2"></rect>
+<text x="534" y="88" text-anchor="middle" font-size="10" font-weight="700" fill="var(--accent)">Order 1</text>
+<text x="316" y="92" font-size="13.5" font-weight="700">①  Update Variable</text>
+<text x="316" y="111" font-size="11" fill="var(--ink-soft)" class="mn">→ XDM - Global</text>
+<line x1="440" y1="126" x2="440" y2="158" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#ahA2)"></line>
+<text x="452" y="148" font-size="10.5" fill="var(--muted)" font-style="italic">then</text>
+<rect x="300" y="162" width="280" height="62" rx="9" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.6"></rect>
+<rect x="496" y="172" width="72" height="20" rx="10" fill="var(--bg)" stroke="var(--accent-line)" stroke-width="1.2"></rect>
+<text x="532" y="186" text-anchor="middle" font-size="10" font-weight="700" fill="var(--accent)">Order 50</text>
+<text x="316" y="190" font-size="13.5" font-weight="700">②  Send Event</text>
+<text x="316" y="209" font-size="11" fill="var(--ink-soft)" class="mn">type web...pageViews</text>
+<line x1="580" y1="193" x2="616" y2="193" stroke="var(--accent)" stroke-width="1.8" marker-end="url(#ahA2)"></line>
+<text x="624" y="190" font-size="11" font-weight="700" fill="var(--accent)">one</text>
+<text x="624" y="203" font-size="11" font-weight="700" fill="var(--accent)">sendEvent</text>
+<text x="440" y="252" text-anchor="middle" font-size="10.5" fill="var(--muted)">Run rule components in sequence</text>
+</svg><figcaption>Two legacy beacons (<span class="mn">s.t()</span>, <span class="mn">s.tl()</span>) collapse into one <span class="mn">sendEvent</span>, fed by two ordered actions: <b>Update Variable</b> (low Order) <b>then</b> Send Event (high Order).</figcaption></figure><div class="call mistake"><span class="ct">⚠ Common mistake</span><p>Leaving rule <b>Order</b> at defaults, so a Send Event fires before the variables populate. The payload arrives missing half its data. Fix: variable rules low Order (1), terminal Send Event high Order (50); enable <b>"Run rule components in sequence."</b></p></div>
+<div class="call danger"><span class="ct">⚠ Kill the global s object</span><p>Any custom code referencing <code>s.eVar1</code> / <code>s.events</code> throws once AppMeasurement is removed. Rewrite it to populate <code>XDM - Global</code> and dispatch via Send Event.</p></div>
+<div class="call check"><span class="ct">✓ You should see</span><p>One <code>sendEvent</code> in the Debugger of type <code>pageViews</code>, carrying all your variables in a single payload.</p></div>

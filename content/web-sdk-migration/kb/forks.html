@@ -1,0 +1,22 @@
+---
+title: "The strategic forks"
+seotitle: "The Strategic Forks in a Web SDK Migration"
+description: "Five decisions to make up front before migrating Adobe Analytics from AppMeasurement to the Web SDK."
+slug: "forks"
+type: kb
+weight: 208
+params:
+  group: decisions
+  grouplabel: "Decisions"
+  hasfull: false
+---
+<p class="khook">Five decisions, made and written down before you touch a setting. Making them explicit is what separates a six-week migration from a six-month one.</p>
+<table class="mini-tbl">
+<tbody><tr><td>1 · Data home</td><td><code>xdm</code> vs <code>data</code> vs hybrid, hybrid, weighted to xdm</td></tr>
+<tr><td>2 · Report suite</td><td>validation suite first; real RSID only at cutover</td></tr>
+<tr><td>3 · Profile</td><td>leave OFF; enable later, deliberately</td></tr>
+<tr><td>4 · Data layer</td><td>keep and map your existing layer</td></tr>
+<tr><td>5 · Library load</td><td>Tags extension + first-party CNAME edge domain</td></tr>
+</tbody></table>
+<p>Alongside these sits the rollout approach: parallel-validate, then phase page-by-page (the hybrid). A big-bang cutover of a large estate concentrates every risk into one irreversible moment and is best avoided.</p>
+<p><b>For your migration:</b> the output is a one-page "migration profile" your whole inventory and plan refer back to. Decisions deferred here resurface as rework later.</p>

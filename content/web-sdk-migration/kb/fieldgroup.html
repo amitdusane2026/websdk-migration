@@ -1,0 +1,24 @@
+---
+title: "The Full Extension"
+seotitle: "The Analytics ExperienceEvent Field Group"
+description: "The Full Extension (ExperienceEvent) field group that auto-maps Analytics variables into your XDM schema."
+slug: "fieldgroup"
+type: kb
+weight: 209
+params:
+  group: decisions
+  grouplabel: "Decisions"
+  hasfull: true
+---
+<p class="khook">If the schema is the blueprint, field groups are the pre-drawn room templates you drop into it. For an Analytics migration, one template does almost all the work.</p>
+<p>The <b>Adobe Analytics ExperienceEvent Full Extension</b> adds the entire <code>_experience.analytics</code> structure, every eVar, prop, event, hierarchy, and list<a class="cite" href="/web-sdk-migration/references/#ref-3" data-ref="3">[3]</a><a class="cite" href="/web-sdk-migration/references/#ref-4" data-ref="4">[4]</a>, and the Edge already knows how to translate those fields straight into your Analytics variables. No processing rules required.</p>
+<p>Anything you put <i>outside</i> this structure (a custom field group of your own) does not auto-map: it arrives in Analytics as a context-data variable prefixed <code>a.x.</code>, and you map it with a processing rule. That's occasionally what you want, but for standard eVars/props/events it's needless labour.</p>
+<p><b>For your migration:</b> adding this one field group is the difference between drag-and-drop mapping and hand-wiring two hundred variables through processing rules. It's the highest-leverage click in the whole build.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Always add the Adobe Analytics ExperienceEvent Full Extension. Hand-mapping variables through processing rules is a last resort, never the default.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>What it contributes</h3>
+<p>The Adobe Analytics ExperienceEvent Full Extension adds the complete <code>_experience.analytics</code> object: eVars (<code>customDimensions.eVars.eVar1..250</code>), props and list props (<code>customDimensions.props</code> / <code>.listProps</code>), events (<code>event1to100</code>, <code>event101to200</code>, …), plus hierarchies and lists. In one move your schema gains a named home for every Analytics variable you have.</p>
+<h3>The auto-mapping, why it's the highest-leverage click</h3>
+<p>The reason this field group matters isn't the fields, it's that the Edge already understands them. Populate <code>_experience.analytics.customDimensions.eVars.eVar12</code> and it lands in eVar12, no processing rule<a class="cite" href="/web-sdk-migration/references/#ref-3" data-ref="3">[3]</a><a class="cite" href="/web-sdk-migration/references/#ref-4" data-ref="4">[4]</a>, no configuration. Compare that to the alternative: a value modelled outside this structure arrives as <code>a.x.</code> context data and needs a processing rule to reach a variable. Across a 200-variable implementation, that's the difference between an afternoon and a month.</p>
+<h3>Events and serialization</h3>
+<p>Events carry a <code>value</code> and, when you need de-duplication, an <code>id</code>, the XDM equivalent of the old <code>event7:dedupeID</code> syntax.</p>
+<div class="gmap">counter / numeric :  _experience.analytics.event1to100.event7.value = 1
+serialized        :  ...event7.value = 1  +  ...event7.id = "ORD-55012"</div>
+<div class="call margin"><span class="ct">Also add</span><p>For commerce, include the Commerce / <code>productListItems</code> field group too. And remember: adding the field group is necessary but not sufficient; you still leave the schema's Profile toggle off until validated.</p></div></section>

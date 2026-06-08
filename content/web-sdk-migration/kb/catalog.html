@@ -1,0 +1,28 @@
+---
+title: "Variable mapping catalog"
+seotitle: "AppMeasurement to XDM Variable Mapping Catalog"
+description: "A legacy-to-XDM lookup mapping AppMeasurement eVars, props, and events to Web SDK XDM fields."
+slug: "catalog"
+type: kb
+weight: 315
+params:
+  group: reference
+  grouplabel: "Reference"
+  hasfull: false
+---
+<p>The lookup every developer keeps open during the build: legacy variable on the left, its XDM path and its <code>data</code>-object key on the right<a class="cite" href="/web-sdk-migration/references/#ref-4" data-ref="4">[4]</a><a class="cite" href="/web-sdk-migration/references/#ref-36" data-ref="36">[36]</a>. Patterns, not an exhaustive list of all 250 eVars, the pattern is the reusable knowledge.</p>
+<table class="mini-tbl">
+<tbody><tr><td>pageName</td><td><code>web.webPageDetails.name</code> · data: <code>pageName</code></td></tr>
+<tr><td>channel</td><td><code>web.webPageDetails.siteSection</code> · data: <code>channel</code></td></tr>
+<tr><td>referrer</td><td><code>web.webReferrer.URL</code> · data: <code>referrer</code></td></tr>
+<tr><td>eVarN</td><td><code>_experience.analytics.customDimensions.eVars.eVarN</code></td></tr>
+<tr><td>propN</td><td><code>_experience.analytics.customDimensions.props.propN</code></td></tr>
+<tr><td>eventN</td><td><code>_experience.analytics.event1to100.eventN.value</code> (+ <code>.id</code> to serialize)</td></tr>
+<tr><td>hierN / listN</td><td><code>...customDimensions.hierarchies / lists.*</code></td></tr>
+<tr><td>products</td><td><code>productListItems[]</code> · merchandising → data: <code>products</code></td></tr>
+<tr><td>purchaseID</td><td><code>commerce.order.purchaseID</code></td></tr>
+<tr><td>campaign</td><td><code>marketing.trackingCode</code> · data: <code>campaign</code></td></tr>
+<tr><td>ECID / mid</td><td><code>identityMap</code> (auto) · context data <code>a.x.identitymap.ecid.0.id</code></td></tr>
+<tr><td>contextData[key]</td><td>data: <code>contextData.&lt;key&gt;</code>, existing processing rules keep working</td></tr>
+</tbody></table>
+<p><b>For your migration:</b> use this to fill the "target path" column of your inventory. When a value resists a clean XDM home, the data-object column is your sanctioned escape hatch.</p>

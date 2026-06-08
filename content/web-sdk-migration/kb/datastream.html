@@ -1,0 +1,22 @@
+---
+title: "The datastream"
+seotitle: "The Datastream in a Web SDK Migration"
+description: "What the datastream is and how it bridges the Edge Network to your Adobe Analytics report suite."
+slug: "datastream"
+type: kb
+weight: 212
+params:
+  group: decisions
+  grouplabel: "Decisions"
+  hasfull: true
+---
+<p class="khook">The datastream is a switchboard. The browser places a call; the datastream decides which lines it connects to, Analytics, Target, the Platform, and which report suite it rings.</p>
+<p>It's a server-side configuration that tells the Edge what to do with arriving payloads. No datastream, and the Edge has nowhere to send your data; it's discarded. Add the Adobe Analytics service and a report suite ID, and every payload is forwarded there.</p>
+<p>The datastream ID (formerly the <code>edgeConfigId</code>)<a class="cite" href="/web-sdk-migration/references/#ref-21" data-ref="21">[21]</a> is bound to each Tags environment. You create three, Dev, Staging, Production, so each environment routes independently, and you can apply report-suite overrides for multi-suite setups.</p>
+<p><b>For your migration:</b> the report suite a datastream points at is its most consequential setting. Through the whole build, Dev and Staging point at a validation suite; only Production points at the live RSID, and only at cutover.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Three datastreams, always. Dev and Staging point at a validation RSID; Production gets the live RSID only at cutover.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>One config, three copies</h3>
+<p>A datastream is the server-side instruction set the Edge consults for every payload: which services to forward to, and with what settings. You build <b>three</b>, Dev, Staging, Production, and bind each to the matching Tags environment, so test traffic and live traffic route independently. This separation is the backbone of safe validation.</p>
+<h3>The Analytics service</h3>
+<p>Adding the Adobe Analytics service to a datastream and entering a report suite ID is what makes your data reach Analytics<a class="cite" href="/web-sdk-migration/references/#ref-21" data-ref="21">[21]</a>. The report suite ID is the most consequential setting in the whole datastream: Dev and Staging point at a <b>validation</b> suite throughout the build; only Production points at the live RSID, and only at cutover. For multi-suite or multi-brand setups, report-suite <b>overrides</b> let a single <code>sendEvent</code> route dynamically.</p>
+<h3>Geolocation and the ID</h3>
+<p>Enable <b>Geolocation and network lookup</b> so the Edge fills <code>placeContext.geo.*</code> server-side, work that used to need client-side plugins. Each datastream has an ID (the artifact formerly called the <code>edgeConfigId</code>) that you copy into the Web SDK extension per environment.</p>
+<div class="call mistake"><span class="ct">⚠ The classic error</span><p>Pointing Dev or Staging at the production RSID "just to confirm it works." Every test hit is then real, live data; you inflate the numbers the business watches, for weeks, and you cannot un-collect it. The tell: live metrics rise when only QA is active.</p></div></section>

@@ -1,0 +1,37 @@
+---
+title: "Migrate identity (ECID)"
+seotitle: "Migrate ECID Identity to the Adobe Web SDK"
+description: "How to preserve visitor identity (ECID) when migrating from AppMeasurement to the Web SDK, and avoid the identity cliff at cutover."
+slug: "migrate-identity-ecid"
+weight: 7
+type: step
+params:
+  stepnum: 7
+  rebalanced: true
+  kbids: ["identity"]
+---
+<div class="narrative">Every visitor Adobe has ever seen carries an identity, the ECID, and your site has been storing it in a cookie for years. The risk in this migration isn't losing data; it's losing <b>continuity</b>. If the Web SDK starts minting fresh IDs, every returning visitor looks brand-new overnight. One checkbox prevents this: it tells the Web SDK to read the identity already in the visitor's cookie and keep using it, so the person who bought from you last week is still the same person this week. It is the smallest action in the whole migration with the largest downside if missed.</div><div class="why-row"><span class="wl">Why?</span><a class="why" href="/web-sdk-migration/kb/identity/" data-kb="identity">Why the visitor cliff happens <span class="arr">↗</span></a></div><div class="actionblock"><div class="abh">What to do</div><div class="astep"><div class="an">1</div><div>
+  <div class="al"><span class="lbl">Where</span> <span class="path">(Web SDK extension config) › Identity</span></div>
+  <div class="al"><span class="lbl">Do</span> Tick <b>"Migrate ECID from VisitorAPI to the web SDK."</b> Save. Requires the <b>same Org ID</b> and <b>same domain</b><a class="cite" href="/web-sdk-migration/references/#ref-7" data-ref="7">[7]</a> as the old Visitor API.</div>
+</div></div></div><figure class="fig-svg"><svg viewBox="0 0 720 270" role="img" aria-label="Visitor cliff with and without ID migration">
+<!-- LEFT panel: without migration -->
+<text x="172" y="30" text-anchor="middle" font-size="13" font-weight="700">Without ID migration</text>
+<line x1="44" y1="220" x2="300" y2="220" stroke="var(--line)" stroke-width="1.5"></line>
+<line x1="44" y1="60" x2="44" y2="220" stroke="var(--line)" stroke-width="1.5"></line>
+<text x="38" y="60" text-anchor="end" font-size="9" fill="var(--faint)" transform="rotate(-90 38 60)">unique visitors</text>
+<line x1="172" y1="56" x2="172" y2="220" stroke="var(--faint)" stroke-width="1.2" stroke-dasharray="4 4"></line>
+<text x="172" y="50" text-anchor="middle" font-size="9.5" fill="var(--faint)">cutover</text>
+<polyline points="56,176 110,174 168,176 174,112 230,108 296,104" fill="none" stroke="var(--danger)" stroke-width="2.4"></polyline>
+<circle cx="174" cy="112" r="3.5" fill="var(--danger)"></circle>
+<text x="248" y="84" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--danger)">uniques spike</text>
+<text x="248" y="98" text-anchor="middle" font-size="9.5" fill="var(--muted)">everyone looks new</text>
+<!-- RIGHT panel: with migration -->
+<text x="524" y="30" text-anchor="middle" font-size="13" font-weight="700">With idMigrationEnabled</text>
+<line x1="396" y1="220" x2="652" y2="220" stroke="var(--line)" stroke-width="1.5"></line>
+<line x1="396" y1="60" x2="396" y2="220" stroke="var(--line)" stroke-width="1.5"></line>
+<line x1="524" y1="56" x2="524" y2="220" stroke="var(--faint)" stroke-width="1.2" stroke-dasharray="4 4"></line>
+<text x="524" y="50" text-anchor="middle" font-size="9.5" fill="var(--faint)">cutover</text>
+<polyline points="408,150 462,149 518,150 530,149 588,150 648,149" fill="none" stroke="var(--ok)" stroke-width="2.4"></polyline>
+<text x="580" y="126" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--ok)">continuous</text>
+<text x="580" y="140" text-anchor="middle" font-size="9.5" fill="var(--muted)">ECID carried across</text>
+</svg><figcaption>Skip the one checkbox and returning visitors get fresh IDs, unique visitors <b>spike</b> at cutover. With <span class="mn">idMigrationEnabled</span>, the ECID rides across and the line stays smooth.</figcaption></figure><div class="call mistake"><span class="ct">⚠ Common mistake, the story everyone learns the hard way</span><p>Teams treat this checkbox as obvious and skip validating it. Three weeks after go-live, unique visitors spike and returning-visitor trends collapse. The implementation was technically correct, identity continuity was simply never confirmed.</p></div><div class="call margin"><span class="ct">Reality check</span><p>It defaults on and needs no Client Care ticket, but "defaults on" is not "verified on." In the Debugger, confirm a returning visitor's ECID actually matches their old <code>AMCV_</code> cookie value.</p></div><div class="call check"><span class="ct">✓ You should see</span><p>The checkbox enabled, and later, in the Debugger, a returning visitor's ECID equal to their pre-migration value.</p></div>

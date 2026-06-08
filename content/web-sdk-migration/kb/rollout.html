@@ -1,0 +1,24 @@
+---
+title: "Rollout & decommission"
+seotitle: "Web SDK Rollout & AppMeasurement Decommission"
+description: "Phasing, cutover, and rollback for rolling out the Web SDK and decommissioning AppMeasurement."
+slug: "rollout"
+type: kb
+weight: 421
+params:
+  group: program
+  grouplabel: "Program & strategy"
+  hasfull: true
+---
+<p class="khook">Advance like a rising tide, one section at a time, always keeping a way back, not a single dramatic flip of the whole site.</p>
+<p>Mixed implementation is supported <i>across</i> pages: some sections on the Web SDK while others still run AppMeasurement. It is never supported <i>on the same page</i>, two libraries together cause duplicate identities and inflated metrics. So you migrate section by section, watch each, and only then move on.</p>
+<p>Cutover itself is small: repoint the Production datastream from the validation RSID to the real one<a class="cite" href="/web-sdk-migration/references/#ref-21" data-ref="21">[21]</a>, and promote the Tags library Dev → Staging → Production. Decommissioning follows per validated section, disable the legacy Adobe Analytics and Experience Cloud ID Service extensions, remove residual <code>AppMeasurement.js</code> and <code>VisitorAPI.js</code>.</p>
+<p><b>For your migration:</b> your rollback is simply re-publishing the previous Tags library for a section, which is why phasing matters; it keeps the blast radius to one section. Document the rollback before go-live, not during an incident, and monitor unique visitors and key conversions through the first reporting cycle.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Roll out page-by-page with a documented rollback. Avoid big-bang cutovers on a large estate.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>Advance like a tide</h3>
+<p>With parity proven, you don't flip the whole site at once. Mixed implementation is supported <i>across</i> pages, some sections on the Web SDK, others still on AppMeasurement, but never on the <i>same</i> page, where two libraries cause duplicate identities and inflated counts. So you migrate section by section, watch each, and only then advance. Start with low-risk, lower-traffic sections to keep the blast radius small.</p>
+<h3>The cutover itself</h3>
+<p>Cutover is small and deliberate: repoint the <b>Production datastream</b> from the validation RSID to the real production RSID<a class="cite" href="/web-sdk-migration/references/#ref-21" data-ref="21">[21]</a>, and promote the Tags library Dev → Staging → Production. Keep <code>idMigrationEnabled</code> on so returning visitors carry their ECID across the switch.</p>
+<h3>Decommission</h3>
+<p>Per validated section, retire the old world: disable the legacy <b>Adobe Analytics</b> and <b>Experience Cloud ID Service</b> extensions, remove residual <code>AppMeasurement.js</code> and <code>VisitorAPI.js</code>, and re-publish. Confirm in the Debugger that no legacy beacons fire and no <code>s</code>-object errors appear in the console.</p>
+<h3>Rollback and monitoring</h3>
+<p>Your rollback is simply re-publishing the previous Tags library for a section, which is why phasing and retained versions matter: reverting one section never touches the others. Document the steps and owners <i>before</i> go-live. Then monitor the first reporting cycle: unique visitors (the cliff check), key conversions, and parity against the retiring legacy data where they overlap.</p>
+<div class="call mistake"><span class="ct">⚠ Common mistake</span><p>A big-bang cutover of the whole site. When something's off, and something always is, the blast radius is everything at once, and rollback becomes a scramble instead of a calm, single-section re-publish.</p></div></section>

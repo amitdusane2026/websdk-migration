@@ -1,0 +1,23 @@
+---
+title: "One library (alloy)"
+seotitle: "Loading & Configuring the Web SDK (alloy)"
+description: "How the Web SDK library (alloy.js) is loaded and configured when migrating from AppMeasurement."
+slug: "library"
+type: kb
+weight: 213
+params:
+  group: decisions
+  grouplabel: "Decisions"
+  hasfull: true
+---
+<p class="khook">A Swiss-army tool replacing a drawer full of single-purpose ones. You used to load AppMeasurement, the Visitor API, and often at.js, three downloads, three points of failure.</p>
+<p>The Web SDK is one library, <code>alloy.js</code>, delivered through the AEP Web SDK extension in your Launch property. It handles data collection, identity, and personalization from a single configuration.</p>
+<p>In Tags you rarely touch the raw library, the extension's UI fields map onto the underlying <code>configure</code> command<a class="cite" href="/web-sdk-migration/references/#ref-6" data-ref="6">[6]</a> (<code>datastreamId</code>, <code>orgId</code>, <code>edgeDomain</code>, consent, identity, and so on). You bind a datastream per environment and you're connected.</p>
+<p><b>For your migration:</b> fewer scripts means faster pages and fewer things that can break, and one configuration surface instead of three. It's also why retiring the old Visitor API extension is part of the plan; its job now lives inside alloy.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>One library. Retire the Visitor API and at.js, never run legacy identity or targeting alongside the Web SDK on the same page.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>From a drawer of tools to one</h3>
+<p>The legacy stack was several independent scripts: AppMeasurement for Analytics, the Visitor API for identity, and often at.js for Target, three downloads, three configurations, three things that could fail or fall out of sync. The Web SDK collapses all of it into a single library, <code>alloy.js</code>, that handles collection, identity, and personalization from one configuration.</p>
+<h3>You rarely touch the raw library</h3>
+<p>In a Tags-managed world, the AEP Web SDK extension wraps <code>alloy.js</code> for you. The extension's UI fields map directly onto the underlying <code>configure</code> command, <code>datastreamId</code>, <code>orgId</code>, <code>edgeDomain</code>, consent defaults, identity migration, so you configure in the Launch UI and the extension emits the right calls. The raw <code>alloy("configure", {…})</code> form exists for non-Tags implementations, but it's the exception.</p>
+<h3>The first-party edge domain</h3>
+<p>Point collection at a first-party subdomain you own (e.g. <code>data.example.com</code>) via a CNAME to the Edge. This keeps requests in a first-party context, resilient to ITP and ad-blockers, and is set as the extension's Edge Domain. Provision the CNAME and its certificate early; the lead time can otherwise block go-live.</p>
+<h3>Retiring the old identity library</h3>
+<p>Because alloy owns identity natively, the Experience Cloud ID Service extension becomes redundant, but you don't yank it carelessly. Keep ECID migration enabled so continuity holds, and only disable the legacy extension per section during decommission. Never let both manage identity on the same page.</p></section>

@@ -1,0 +1,26 @@
+---
+title: "The consent model"
+seotitle: "The Consent Model in the Adobe Web SDK"
+description: "How consent works in the Adobe Web SDK — gating an event queue rather than a single beacon — with your CMP."
+slug: "consent"
+type: kb
+weight: 105
+params:
+  group: concepts
+  grouplabel: "Concepts"
+  hasfull: true
+---
+<p class="khook">Old consent was a blocked pipe: no permission, no beacon, no data. New consent is a valve on a queue, events wait safely behind it until the visitor says go.</p>
+<p>Three parts work together. <code>defaultConsent</code> sets the posture before the visitor chooses<a class="cite" href="/web-sdk-migration/references/#ref-10" data-ref="10">[10]</a>, <code>pending</code> queues events locally and sends nothing (the GDPR-friendly default), <code>in</code> collects, <code>out</code> discards. <code>setConsent</code> records the actual choice and flushes or drops the queue<a class="cite" href="/web-sdk-migration/references/#ref-11" data-ref="11">[11]</a>. The <code>kndctr_..._consent</code> cookie persists the preference, written either way.</p>
+<p>You wire the choice with a <b>Set Consent</b> rule action<a class="cite" href="/web-sdk-migration/references/#ref-13" data-ref="13">[13]</a>, fired on Window Loaded for Adobe-standard consent, or from a <code>__tcfapi</code> <code>useractioncomplete</code> listener for IAB TCF<a class="cite" href="/web-sdk-migration/references/#ref-12" data-ref="12">[12]</a>. Consent doesn't persist across page loads by itself, so you re-assert it each load.</p>
+<p><b>For your migration:</b> with <code>pending</code>, a mis-wired Set Consent leaves every event queued forever, which looks exactly like "Analytics is down" when nothing is actually broken. It's the most misdiagnosed failure in the whole migration.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Default to <code>pending</code> in regulated regions. Treat a queued-but-not-sending state as a consent-wiring bug to fix, not an outage to panic over.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>From blocking the beacon to gating a queue</h3>
+<p>AppMeasurement consent worked by suppression: no consent, no script, no hit, and any data in that window was simply gone. The Web SDK instead <b>queues</b>. With consent pending, events accumulate locally and nothing is sent, but nothing is lost either, and the moment consent arrives, the queue flushes. Same goal, completely different mechanism, and the difference is the source of most consent confusion.</p>
+<h3>The three moving parts</h3>
+<table class="mini-tbl">
+<tbody><tr><td>defaultConsent</td><td>Posture before the visitor chooses<a class="cite" href="/web-sdk-migration/references/#ref-10" data-ref="10">[10]</a>: <code>pending</code> (queue, the GDPR-friendly default), <code>in</code> (collect), <code>out</code> (discard).</td></tr>
+<tr><td>setConsent</td><td>Records the actual choice and flushes or drops the queue<a class="cite" href="/web-sdk-migration/references/#ref-11" data-ref="11">[11]</a>, wired as a Set Consent rule action.</td></tr>
+<tr><td>kndctr_…_consent</td><td>The cookie that persists the preference, written regardless of the choice (it must record opt-out too).</td></tr>
+</tbody></table>
+<h3>Adobe standard vs IAB TCF</h3>
+<p>For <b>Adobe standard</b> consent, fire Set Consent on Window Loaded and again on any consent change. For <b>IAB TCF 2.0</b>, listen with <code>__tcfapi('addEventListener', …)</code> and fire on <code>useractioncomplete</code>, passing the TC string, with standard set to IAB TCF<a class="cite" href="/web-sdk-migration/references/#ref-12" data-ref="12">[12]</a>.</p>
+<div class="call danger"><span class="ct">⚠ Three gotchas that bite</span><p><b>1.</b> Consent doesn't persist across page loads by itself, re-assert it each load, because the extension can't read current consent on its own. <b>2.</b> With <code>pending</code>, events queue and never process until opt-in, a mis-wired Set Consent looks exactly like "Analytics is down." <b>3.</b> For IAB TCF, the consent signal is not auto-attached to events, add the consent field group and include it in the XDM.</p></div></section>

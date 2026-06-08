@@ -1,0 +1,26 @@
+---
+title: "The Profile lock"
+seotitle: "The Profile Toggle in a Web SDK Datastream"
+description: "Why you don't enable the Profile dataset on your datastream yet when migrating to the Web SDK."
+slug: "profile"
+type: kb
+weight: 210
+params:
+  group: decisions
+  grouplabel: "Decisions"
+  hasfull: true
+---
+<p class="khook">Think of the schema like wet concrete. While it's wet you can shape it freely. Enable Profile and you've let it set, beautiful if the shape is right, a jackhammer job if it isn't.</p>
+<p>The <b>Profile</b> toggle makes a schema eligible for Real-Time Customer Profile, the unified, cross-source profile that powers RT-CDP and AJO. The moment a Profile-enabled schema ingests data, it <b>locks</b>: you can't remove fields or disable Profile without resetting the entire sandbox.</p>
+<p>An Analytics-only migration does not need Profile at all. CJA-readiness comes from clean XDM, not from this toggle, so there is no reason to flip it during the build.</p>
+<p><b>For your migration:</b> leave Profile OFF. Build the cleanest XDM you can, validate for weeks, and only enable Profile later, deliberately, when a profile use-case actually arrives. This is the single most common irreversible mistake in the whole project.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Leave Profile OFF during the Analytics migration. Enable it only when a real-time profile use-case genuinely exists, and treat that as its own signed-off decision.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>What Profile is</h3>
+<p>The Profile toggle makes a schema eligible for <b>Real-Time Customer Profile</b>, Adobe's unified, cross-source view of a person that powers Real-Time CDP and Journey Optimizer. It's a genuinely powerful capability, and entirely unnecessary for an Analytics-only migration.</p>
+<h3>Why it's treated like a live wire</h3>
+<p>The moment a Profile-enabled schema ingests data, it <b>locks</b>. You can no longer remove fields, change certain field types, or disable Profile, the only way back is resetting the entire sandbox, which discards everything in it. There is no "undo." This is the single most common irreversible mistake in a Web SDK project, usually made by someone flipping the toggle "to see what it does."</p>
+<h3>When to enable it</h3>
+<table class="mini-tbl">
+<tbody><tr><td>AA only</td><td>Leave OFF, never needed.</td></tr>
+<tr><td>CJA later</td><td>Leave OFF, CJA reads clean XDM without Profile.</td></tr>
+<tr><td>RT-CDP / AJO</td><td>Enable later, deliberately, after weeks of validation, when a profile use-case is real.</td></tr>
+</tbody></table>
+<p>The discipline: build the cleanest XDM you can now, validate thoroughly, and treat enabling Profile as its own decision with its own sign-off, not a checkbox you tick during setup.</p></section>

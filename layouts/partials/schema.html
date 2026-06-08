@@ -1,0 +1,48 @@
+{{- $home := .Site.Home.Permalink -}}
+{{- $person := dict "@type" "Person" "name" .Site.Params.author "url" $home "jobTitle" .Site.Params.jobTitle "sameAs" (slice .Site.Params.linkedin) -}}
+{{- $migURL := (printf "%sweb-sdk-migration/" $home) -}}
+
+{{- if .IsHome -}}
+  {{- $website := dict "@context" "https://schema.org" "@type" "WebSite" "name" .Site.Title "url" $home "author" $person -}}
+  <script type="application/ld+json">{{ $website | jsonify (dict "indent" "  ") | safeJS }}</script>
+  <script type="application/ld+json">{{ (merge (dict "@context" "https://schema.org") $person) | jsonify (dict "indent" "  ") | safeJS }}</script>
+{{- end -}}
+
+{{- /* Guide landing: HowTo listing the 13 steps */ -}}
+{{- if and .IsSection (eq .RelPermalink "/web-sdk-migration/") -}}
+  {{- $steps := (where .Site.RegularPages "Type" "step").ByWeight -}}
+  {{- $els := slice -}}
+  {{- range $i, $s := $steps -}}
+    {{- $els = $els | append (dict "@type" "HowToStep" "position" (add $i 1) "name" $s.Title "url" $s.Permalink) -}}
+  {{- end -}}
+  {{- $howto := dict "@context" "https://schema.org" "@type" "HowTo" "name" "Migrate from AppMeasurement to the Adobe Web SDK" "description" .Description "totalTime" "P30D" "step" $els "author" $person -}}
+  <script type="application/ld+json">{{ $howto | jsonify (dict "indent" "  ") | safeJS }}</script>
+{{- end -}}
+
+{{- /* Step / KB / Reference pages: TechArticle */ -}}
+{{- if and .IsPage (or (eq .Type "step") (or (eq .Type "kb") (eq .Type "ref"))) -}}
+  {{- $article := dict
+      "@context" "https://schema.org"
+      "@type" "TechArticle"
+      "headline" .Title
+      "description" .Description
+      "url" .Permalink
+      "inLanguage" "en"
+      "author" $person
+      "publisher" $person
+      "isPartOf" (dict "@type" "CreativeWorkSeries" "name" "AppMeasurement to Adobe Web SDK Migration Guide" "url" $migURL) -}}
+  <script type="application/ld+json">{{ $article | jsonify (dict "indent" "  ") | safeJS }}</script>
+{{- end -}}
+
+{{- /* Breadcrumbs on guide pages */ -}}
+{{- if hasPrefix .RelPermalink "/web-sdk-migration" -}}
+  {{- $crumbs := slice (dict "name" "Home" "url" $home) (dict "name" "Web SDK Migration" "url" $migURL) -}}
+  {{- if eq .Type "kb" -}}{{- $crumbs = $crumbs | append (dict "name" "Knowledge Base" "url" (printf "%skb/" $migURL)) -}}{{- end -}}
+  {{- if not (eq .RelPermalink "/web-sdk-migration/") -}}{{- $crumbs = $crumbs | append (dict "name" .Title "url" .Permalink) -}}{{- end -}}
+  {{- $els := slice -}}
+  {{- range $i, $c := $crumbs -}}
+    {{- $els = $els | append (dict "@type" "ListItem" "position" (add $i 1) "name" $c.name "item" $c.url) -}}
+  {{- end -}}
+  {{- $bc := dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $els -}}
+  <script type="application/ld+json">{{ $bc | jsonify (dict "indent" "  ") | safeJS }}</script>
+{{- end -}}

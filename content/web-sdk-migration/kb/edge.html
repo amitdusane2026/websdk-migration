@@ -1,0 +1,22 @@
+---
+title: "The Edge Network"
+seotitle: "The Adobe Edge Network Explained"
+description: "What the Adobe Edge Network is and why data is now assembled there instead of in the browser with the Web SDK."
+slug: "edge"
+type: kb
+weight: 101
+params:
+  group: concepts
+  grouplabel: "Concepts"
+  hasfull: true
+---
+<p class="khook">Picture the old setup as a chef cooking in every customer's kitchen. The new setup hires a waiter: the browser takes one order and carries it to a single professional kitchen, the Edge Network, that cooks for everyone.</p>
+<p>The Edge is Adobe's globally distributed server layer. It receives the Web SDK's payload, validates it against your schema, enriches it (geo lookup, identity resolution), and fans it out to whichever Adobe services your datastream names, Analytics today, Target and AEP when you're ready. The work that used to happen in the browser now happens here.</p>
+<p>Requests reach the Edge at your first-party edge domain on <code>/ee/</code> endpoints, an <i>interact</i> call when a response is needed (page views, personalization) and a fire-and-forget <i>collect</i> call<a class="cite" href="/web-sdk-migration/references/#ref-5" data-ref="5">[5]</a> for things like link clicks. The datastream is what tells the Edge which kitchens to cook for.</p>
+<p><b>For your migration:</b> because assembly and routing live server-side, your client shrinks and stays stable. Adding a new destination later becomes a datastream config change, not another tag on the page.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Add new destinations by editing the datastream, never by bolting another tag onto the page. Keep collection client-light and routing server-side.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>What the Edge actually does</h3>
+<p>When the Web SDK sends an event, the payload lands on the nearest node of Adobe's globally distributed Edge Network and passes through a fixed sequence: it is <b>validated</b> against your XDM schema, <b>enriched</b> (IP-based geo lookup fills <code>placeContext.geo.*</code>; the user-agent fills browser and OS details), <b>identified</b> (the ECID is read or minted, consent is checked), and finally <b>fanned out</b> to every service your datastream names, Adobe Analytics today, Target and the Platform when you light them up. The crucial mental shift: all of this used to happen in the browser, and now happens on Adobe's servers.</p>
+<h3>Two kinds of request</h3>
+<p>The Web SDK talks to your edge domain on <code>/ee/</code> endpoints, in two flavours<a class="cite" href="/web-sdk-migration/references/#ref-5" data-ref="5">[5]</a><a class="cite" href="/web-sdk-migration/references/#ref-6" data-ref="6">[6]</a>. An <b>interact</b> call expects a response and is used when the page needs something back, page views that may carry personalization, or any <code>renderDecisions</code> request. A <b>collect</b> call is fire-and-forget, sent with <code>navigator.sendBeacon</code> for things like link clicks where no response is needed<a class="cite" href="/web-sdk-migration/references/#ref-23" data-ref="23">[23]</a><a class="cite" href="/web-sdk-migration/references/#ref-24" data-ref="24">[24]</a>. Your old reflex of watching the network tab for <code>b/ss/</code> calls finds nothing now; these <code>/ee/</code> requests are what you inspect instead.</p>
+<h3>The datastream is the routing table</h3>
+<p>The Edge doesn't guess where to send your data, the <b>datastream</b> tells it. That's why the datastream is a server-side config rather than something in your tag: adding a destination later (say, Event Forwarding to GA4) is a change to the datastream, not a change to your site. The same single payload can feed many services because the routing lives here, not in the browser.</p>
+<div class="call margin"><span class="ct">Verify at build</span><p>The exact endpoint path and version (<code>/ee/v1</code> vs <code>/ee/v2</code>, <code>interact</code> vs <code>collect</code>) can shift; confirm against the live Debugger rather than assuming. What's stable is the <i>shape</i>: a JSON payload to your first-party edge domain, not a pixel to the legacy collection servers.</p></div></section>

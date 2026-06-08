@@ -1,0 +1,22 @@
+---
+title: "Why Web SDK"
+seotitle: "Why the Adobe Web SDK Replaces AppMeasurement"
+description: "Why the Adobe Web SDK replaces AppMeasurement — the shift from browser-side collection to the Edge Network, in plain terms."
+slug: "websdk"
+type: kb
+weight: 100
+params:
+  group: concepts
+  grouplabel: "Concepts"
+  hasfull: true
+---
+<p class="khook">For fifteen years, collecting Adobe Analytics meant shipping a small factory to every visitor's browser. AppMeasurement read your variables, assembled the hit, and trucked it to Adobe's collection servers, on the user's device, on every page.</p>
+<p>The Web SDK retires that factory. In its place is a thin client, <code>alloy.js</code>, that does one job: gather your data into a single structured message and hand it to Adobe's <b>Edge Network</b>, which does the assembling server-side. The same one library now speaks for Analytics, Target, and the Experience Platform, where you used to load three.</p>
+<p>Technically, the shift is from a client-side beacon (the old <code>b/ss/</code> calls) to a JSON payload sent to a datastream-configured Edge endpoint<a class="cite" href="/web-sdk-migration/references/#ref-5" data-ref="5">[5]</a>. Your variables travel as either structured <code>xdm</code> or familiar <code>data.__adobe.analytics</code> keys; the Edge translates and routes them.</p>
+<p><b>For your migration:</b> this is why you're not just swapping a script. The reason the effort is worth it is everything it unlocks, one beacon, faster pages, server-side enrichment<a class="cite" href="/web-sdk-migration/references/#ref-T5" data-ref="T5">[T5]</a>, and the same data feeding CJA, Real-Time CDP, and server-side Event Forwarding later, with no re-tagging.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Migrate. The Web SDK is the on-ramp to CJA, Real-Time CDP, and server-side forwarding, treat AppMeasurement as end-of-life, not a parallel option to keep alive.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>The factory that lived in the browser</h3>
+<p>For fifteen years, collecting Adobe Analytics meant shipping a small factory to every visitor's device. AppMeasurement read your variables, ran <code>doPlugins</code>, compiled the hit, and fired it to Adobe's collection servers, all client-side, on every page, for every user. It worked, but it meant heavy libraries, multiple beacons, and logic scattered across the browser.</p>
+<h3>What the Web SDK changes</h3>
+<p>The Web SDK replaces that factory with a thin client, <code>alloy.js</code>, whose job is to gather your data into one structured message and hand it to the Edge Network. Assembly, identity, enrichment, and routing all move server-side. One library now does what AppMeasurement, the Visitor API, and at.js did separately, and it speaks JSON to a datastream-configured endpoint, not pixels to <code>b/ss/</code>.</p>
+<h3>Why it's worth the effort</h3>
+<p>The migration is not a like-for-like swap; it's a move onto the platform everything else plugs into. The same payload that feeds Analytics today feeds <b>CJA</b> tomorrow with no re-instrumentation, enables <b>server-side Event Forwarding</b> to GA4 and Meta without new page tags, and powers <b>Target</b> personalization from the same beacon. Fewer scripts also means faster pages and fewer points of failure.</p>
+<p>The honest framing for stakeholders: this is infrastructure work whose payoff is optionality. You're not chasing one feature, you're removing the ceiling that AppMeasurement put on everything downstream.</p></section>

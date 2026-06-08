@@ -1,0 +1,29 @@
+---
+title: "Rule order & sendEvent"
+seotitle: "Rule Order & sendEvent in the Web SDK"
+description: "How to order tag rules and the sendEvent call to fix the race condition in a Web SDK migration."
+slug: "ruleorder"
+type: kb
+weight: 318
+params:
+  group: reference
+  grouplabel: "Reference"
+  hasfull: true
+---
+<p class="khook">Assemble the sandwich before you hand it over. Launch will happily pass an empty plate to the customer if you don't tell it to make the sandwich first.</p>
+<p>The Web SDK splits collection into two rule actions: <b>Update Variable</b> (fill your <code>XDM - Global</code> object) and <b>Send Event</b> (dispatch it). The trouble is that Launch sorts rule components by their <b>Order</b> value before running them, so a Send Event with a default order can fire before the variables are populated.</p>
+<p>The fix is deterministic ordering: give variable-setting rules a low Order (e.g. 1) and the terminal Send Event a high Order (e.g. 50)<a class="cite" href="/web-sdk-migration/references/#ref-28" data-ref="28">[28]</a>, and enable the property setting <b>"Run rule components in sequence."</b> On event-driven and SPA sites this matters even more, because multiple rules compete.</p>
+<p><b>For your migration:</b> this is the single most common build bug, a payload that arrives with cart items but no page context, or half its events missing. Order discipline makes it disappear.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Set variables in low-Order rules, send in high-Order rules, and enable "run components in sequence." Never rely on default ordering.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>The two-rule pattern</h3>
+<p>Collection now splits into two actions: <b>Update Variable</b> fills your <code>XDM - Global</code> object, and <b>Send Event</b> dispatches it. The clean structure is one rule (or rule component) that sets everything, and a terminal one that sends, assemble the sandwich, then hand it over.</p>
+<h3>Why order is a real bug, not a nicety</h3>
+<p>Launch sorts rule components by their <b>Order</b> value <i>before</i> executing them<a class="cite" href="/web-sdk-migration/references/#ref-28" data-ref="28">[28]</a>. So a Send Event left at the default order can fire <i>before</i> the variables are populated, shipping a payload with, say, cart items but no page context, or half its events missing. On event-driven and SPA sites, where multiple rules react to the same moment, this is even more likely.</p>
+<h3>The fix</h3>
+<p>Give variable-setting rules a low Order (e.g. <code>1</code>) and terminal Send Event rules a high Order (e.g. <code>50</code>), and enable the property setting <b>"Run rule components in sequence"</b> so actions within a rule complete in order.</p>
+<h3>Worked: a Product View rule</h3>
+<div class="gmap">Before (AppMeasurement)         After (Web SDK)
+  Set Variables                   Update Variable → XDM - Global
+    eVar5 = %Product SKU%            _experience.analytics...eVars.eVar5  = %Product SKU%
+    events = event2                  _experience.analytics.event1to100.event2.value = 1
+    products = ";%SKU%"              productListItems = %XDM - productListItems%
+  Send Beacon (s.t)               Send Event  type web.webpagedetails.pageViews</div>
+<div class="call danger"><span class="ct">⚠ Kill the global s object</span><p>Any custom code that still references <code>s.eVar1</code> or <code>s.events</code> throws once AppMeasurement is removed. Rewrite it to populate the variable object and dispatch via Send Event.</p></div></section>

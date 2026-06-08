@@ -1,0 +1,8 @@
+{{- $idx := slice -}}
+{{- range (where .Site.RegularPages "Section" "web-sdk-migration") -}}
+  {{- $badge := cond (eq .Type "step") "Step" (cond (eq .Type "kb") "KB" "Reference") -}}
+  {{- $grp := "" -}}
+  {{- if eq .Type "kb" }}{{ $grp = .Params.grouplabel }}{{ end -}}
+  {{- $idx = $idx | append (dict "title" .Title "url" .RelPermalink "type" $badge "group" $grp "text" (.Plain | replaceRE "\\s+" " ")) -}}
+{{- end -}}
+{{- $idx | jsonify -}}

@@ -1,0 +1,31 @@
+{{ define "main" }}
+{{ $cur := . }}
+{{ $steps := (where .Site.RegularPages "Type" "step").ByWeight }}
+{{ $total := len $steps }}
+{{ $idx := -1 }}
+{{ range $i, $p := $steps }}{{ if eq $p.File.Path $cur.File.Path }}{{ $idx = $i }}{{ end }}{{ end }}
+
+<p class="crumb"><a href="{{ "/" | relURL }}">Home</a> &rsaquo; <a href="{{ "/web-sdk-migration/" | relURL }}">Web SDK Migration</a> &rsaquo; {{ .Title }}</p>
+
+<div class="guide-layout">
+  <aside class="guide-rail" aria-label="Migration steps">
+    <div class="rail-h">Migration steps</div>
+    <ol>
+      {{ range $steps }}
+      <li><a class="steplink {{ if eq .File.Path $cur.File.Path }}active{{ end }}" href="{{ .RelPermalink }}"><span class="sn">{{ .Params.stepnum }}</span><span>{{ .Title }}</span></a></li>
+      {{ end }}
+    </ol>
+  </aside>
+
+  <article class="guide{{ if .Params.rebalanced }} rebalanced{{ end }}">
+    {{ $pct := int (math.Round (mul (div (float .Params.stepnum) $total) 100)) }}
+    <div class="progress"><span class="eyebrow">Step {{ printf "%02d" .Params.stepnum }} of {{ $total }}</span><div class="track"><div class="fill" style="width:{{ $pct }}%"></div></div><span class="pc">{{ $pct }}% complete</span></div>
+    <h1>{{ .Title }}</h1>
+    {{ .Content }}
+    <nav class="stepnav" aria-label="Step navigation">
+      {{ if gt $idx 0 }}{{ $p := index $steps (sub $idx 1) }}<a class="prev" href="{{ $p.RelPermalink }}"><span class="lbl">Previous</span>&larr; {{ $p.Title }}</a>{{ else }}<span class="prev placeholder">&middot;</span>{{ end }}
+      {{ if lt $idx (sub $total 1) }}{{ $n := index $steps (add $idx 1) }}<a class="next" href="{{ $n.RelPermalink }}"><span class="lbl">Next</span>{{ $n.Title }} &rarr;</a>{{ else }}<span class="next placeholder">&middot;</span>{{ end }}
+    </nav>
+  </article>
+</div>
+{{ end }}

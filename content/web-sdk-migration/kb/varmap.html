@@ -1,0 +1,26 @@
+---
+title: "Variable groups & schema map"
+seotitle: "Variable Groups & XDM Schema Map"
+description: "Where each AppMeasurement variable group lives in your XDM schema after migrating to the Web SDK."
+slug: "varmap"
+type: kb
+weight: 314
+params:
+  group: reference
+  grouplabel: "Reference"
+  hasfull: false
+---
+<p class="khook">Variables of the same kind move the same way. Learn the pattern once per group, and mapping becomes repetition rather than two hundred separate decisions.</p>
+<p>Everything you bundle into your <code>XDM - Global</code> variable lands in a predictable place, mostly under <code>_experience.analytics</code> thanks to the Full Extension<a class="cite" href="/web-sdk-migration/references/#ref-4" data-ref="4">[4]</a>. The five groups:</p>
+<div class="gmap">OOTB / standard
+  pageName     →  web.webPageDetails.name
+  channel      →  web.webPageDetails.siteSection
+  browser, OS  →  environment.browserDetails.*   (auto)
+  geo          →  placeContext.geo.*             (auto)
+
+eVars   →  _experience.analytics.customDimensions.eVars.eVarN
+props   →  _experience.analytics.customDimensions.props.propN
+list    →  _experience.analytics.customDimensions.listProps.propN
+events  →  _experience.analytics.event1to100.eventN.value  (+ .id to serialize)
+products→  productListItems[]   (SKU, name, quantity, priceTotal)</div>
+<p><b>For your migration:</b> standard variables auto-map with no processing rules. The one group that fights you is product-scoped <b>merchandising</b> eVars; those are better sent via the <code>data.__adobe.analytics.products</code> string than forced into <code>productListItems</code><a class="cite" href="/web-sdk-migration/references/#ref-36" data-ref="36">[36]</a>.</p>

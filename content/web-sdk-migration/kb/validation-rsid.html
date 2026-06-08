@@ -1,0 +1,23 @@
+---
+title: "Validation report suite"
+seotitle: "Use a Validation Report Suite, Not Your Live RSID"
+description: "Why to send Web SDK data to a validation report suite, not your live RSID, while proving the migration."
+slug: "validation-rsid"
+type: kb
+weight: 211
+params:
+  group: decisions
+  grouplabel: "Decisions"
+  hasfull: true
+---
+<p class="khook">A flight simulator, not the real plane. You want somewhere to crash safely while you learn the controls.</p>
+<p>A validation report suite is a throwaway suite you create specifically for the migration. Your Dev and Staging datastreams point at it, so every test hit during the build lands somewhere harmless<a class="cite" href="/web-sdk-migration/references/#ref-21" data-ref="21">[21]</a> instead of in the numbers your business watches.</p>
+<p>The risk it removes is subtle but real: the moment a test page fires a Web SDK call, that data is genuine collected data. A datastream aimed at the production RSID silently inflates live reporting, and you cannot un-collect it.</p>
+<p><b>For your migration:</b> the validation suite is what lets you run the new implementation beside the old one for parity, fearlessly, for as long as it takes. Only the Production datastream ever sees the real RSID, and only on cutover day.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Never point Dev or Staging datastreams at a production report suite, not even briefly "to check."</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>A flight simulator for your data</h3>
+<p>A validation report suite is a throwaway suite created specifically for the migration. Your Dev and Staging datastreams point at it, so every hit fired during the build lands somewhere harmless instead of in the numbers the business watches.</p>
+<h3>The contamination risk, precisely</h3>
+<p>The subtlety that catches teams: the moment a Web SDK call fires from a test page, that is <b>real collected data</b>. There is no "test mode" that makes it not count. A datastream pointed at the production RSID silently inflates live reporting, unique visitors, page views, events, and you cannot un-collect it. The damage is often invisible until someone asks why traffic rose during a release week when nothing launched.</p>
+<h3>How it enables fearless validation</h3>
+<p>Because Dev and Staging are isolated, you can run the new implementation in parallel with live AppMeasurement for as long as it takes, firing thousands of test hits, breaking things, re-testing, with zero impact on production numbers. This is the foundation the entire parity method stands on: legacy on its live suite, Web SDK on the validation suite, reconciled side by side.</p>
+<h3>The one-way door at cutover</h3>
+<p>Only the <b>Production</b> datastream ever points at the live RSID, and only on cutover day. Until then, treat the production RSID as untouchable from any non-production environment.</p></section>

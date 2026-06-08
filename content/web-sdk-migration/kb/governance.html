@@ -1,0 +1,36 @@
+---
+title: "Governance & ownership"
+seotitle: "Governance & Ownership After Web SDK Migration"
+description: "Who owns and maintains the Web SDK implementation, schema, and datastream after migrating from AppMeasurement."
+slug: "governance"
+type: kb
+weight: 422
+params:
+  group: program
+  grouplabel: "Program & strategy"
+  hasfull: true
+---
+<p class="khook">The project ends; the system lives on. After any move, someone has to water the plants, and the Web SDK spreads ownership across more surfaces than AppMeasurement ever did.</p>
+<p>Where one team used to own "the Analytics tag," responsibility now spans several places, each of which rots if unowned:</p>
+<table class="mini-tbl">
+<tbody><tr><td>Schema</td><td>Data architect, field changes ripple to CJA/AEP; the Profile lock is irreversible</td></tr>
+<tr><td>Datastream</td><td>Analytics eng / admin, RSID routing and services; a wrong RSID is a silent disaster</td></tr>
+<tr><td>Tags</td><td>Analytics implementation, rules, data elements, publishing</td></tr>
+<tr><td>Data layer</td><td>Front-end / product, the menu the waiter reads; drift breaks everything</td></tr>
+<tr><td>Consent</td><td>Analytics + Privacy/Legal, defaultConsent, CMP cookie categorisation</td></tr>
+<tr><td>Identity</td><td>Data architect, cross-domain, CRM IDs, ECID continuity</td></tr>
+</tbody></table>
+<p><b>For your migration:</b> assign a named owner to each surface and put a change-control step on the irreversible ones (schema, datastream). The handover from "project" to "operated system" is where many otherwise-clean migrations slowly decay.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Assign a named owner to each surface, schema, datastream, tags, data layer, consent, identity, before the project closes, and put change-control on the irreversible ones.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>The project ends; the system lives on</h3>
+<p>AppMeasurement concentrated ownership in "the Analytics tag." The Web SDK spreads it across several surfaces, and any surface without a clear owner quietly decays. The handover from project to operated system is where many technically clean migrations slowly fall apart.</p>
+<h3>Who owns what</h3>
+<table class="mini-tbl">
+<tbody><tr><td>Schema</td><td>Data architect, field changes ripple to CJA/AEP; the Profile lock is irreversible</td></tr>
+<tr><td>Datastream</td><td>Analytics eng / admin, RSID routing and services; a wrong RSID is a silent disaster</td></tr>
+<tr><td>Tags</td><td>Analytics implementation, rules, data elements, publishing</td></tr>
+<tr><td>Data layer</td><td>Front-end / product, the source every mapping reads; drift breaks everything</td></tr>
+<tr><td>Consent</td><td>Analytics + Privacy/Legal, defaultConsent posture, CMP cookie categorisation</td></tr>
+<tr><td>Identity</td><td>Data architect, cross-domain, CRM namespaces, ECID continuity</td></tr>
+<tr><td>Report suites</td><td>Analytics admin, processing rules, classifications, marketing channels</td></tr>
+</tbody></table>
+<h3>Operating cadence</h3>
+<p>Put a change-control step on the irreversible surfaces (schema and datastream edits especially). Maintain a documented, versioned data-layer spec with an owner. Reuse the validation checklist as a release gate. And run a periodic audit that the mapping matrix still reflects reality, variables drift, and an out-of-date matrix is how silent breakage creeps back in.</p></section>

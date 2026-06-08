@@ -1,0 +1,10 @@
+{{ define "main" }}
+  <p class="crumb"><a href="{{ "/" | relURL }}">Home</a> &rsaquo; {{ .Title }}</p>
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+  {{ if .Pages }}
+  <ul class="pages">
+    {{ range .Pages }}<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>{{ end }}
+  </ul>
+  {{ end }}
+{{ end }}

@@ -1,0 +1,34 @@
+baseURL = "https://amitdusane.com/"
+languageCode = "en-us"
+title = "Amit G. Dusane"
+enableRobotsTXT = true
+disableKinds = ["taxonomy", "term"]
+
+[outputs]
+  home = ["HTML", "JSON"]
+
+[params]
+  author = "Amit G. Dusane"
+  jobTitle = "Adobe Experience Platform Architect"
+  linkedin = "https://www.linkedin.com/in/amitdusane/"
+
+[services]
+  [services.googleAnalytics]
+    ID = "G-9817PZWN9H"
+  # crimson brand + blue functional accent carried from the app (full look/feel = Phase 2)
+  brandColor = "#e11d48"
+  accentColor = "#1f5fae"
+
+[menu]
+  [[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    name = "Web SDK Migration"
+    url = "/web-sdk-migration/"
+    weight = 2
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 3

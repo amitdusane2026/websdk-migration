@@ -1,0 +1,40 @@
+---
+title: "Map your variables"
+seotitle: "Map eVars, props & events to XDM in Web SDK"
+description: "How to map AppMeasurement variables — eVars, props, events — to XDM or the data object in the Adobe Experience Platform Web SDK."
+slug: "map-your-variables"
+weight: 8
+type: step
+params:
+  stepnum: 8
+  rebalanced: true
+  kbids: ["xdm-vs-data", "varmap"]
+---
+<div class="narrative">This is the heart of the migration, and where your inventory pays off. Every eVar, prop, and event you catalogued earlier now needs a home in the payload, but instead of setting them one at a time on a global object the way <code>doPlugins</code> did, you bundle them into a single structured object the Edge understands. The good news: thanks to the Full Extension, most slot into predictable, named places<a class="cite" href="/web-sdk-migration/references/#ref-4" data-ref="4">[4]</a>. We handle them in five groups, because variables of the same kind map the same way, learn the pattern once per group and the rest is repetition.</div><div class="why-row"><span class="wl">Why?</span><a class="why" href="/web-sdk-migration/kb/xdm-vs-data/" data-kb="xdm-vs-data">Why xdm vs the data object? <span class="arr">↗</span></a><a class="why" href="/web-sdk-migration/kb/varmap/" data-kb="varmap">Where each group lives in the schema <span class="arr">↗</span></a></div><div class="actionblock"><div class="abh">What to do</div><div class="do-intro">First make one master payload object, then map each group into it. For each data-layer value, create a JavaScript Variable data element as you go.</div>
+<div class="astep"><div class="an">0</div><div>
+  <div class="al"><span class="lbl">Where</span> <span class="path">Tags › Data Elements › Add › AEP Web SDK · Variable · XDM</span><a class="cite" href="/web-sdk-migration/references/#ref-27" data-ref="27">[27]</a></div>
+  <div class="al"><span class="lbl">Do</span> Name it <code>XDM - Global</code>. Map the groups below into its nodes.</div>
+</div></div>
+<div class="gstep">Group 1 · OOTB / standard variables</div>
+<div class="do-intro">Page name, channel, browser, OS, geo, standard nodes; geo and user-agent are filled by the Edge automatically.</div>
+<div class="gmap">pageName     →  web.webPageDetails.name
+channel      →  web.webPageDetails.siteSection
+browser, OS  →  environment.browserDetails.*   (auto from user-agent)
+geo          →  placeContext.geo.*             (auto · datastream geolocation)</div>
+<div class="gstep">Group 2 · eVars</div>
+<div class="gmap">eVarN  →  _experience.analytics.customDimensions.eVars.eVarN</div>
+<div class="gstep">Group 3 · props &amp; list props</div>
+<div class="gmap">propN       →  _experience.analytics.customDimensions.props.propN
+list propN  →  _experience.analytics.customDimensions.listProps.propN</div>
+<div class="gstep">Group 4 · events</div>
+<div class="gmap">eventN (counter/numeric)  →  _experience.analytics.event1to100.eventN.value
+eventN (serialized)       →  ...eventN.value  +  ...eventN.id   (id = dedupe key)</div>
+<div class="gstep">Group 5 · product variables</div>
+<div class="do-intro">Map the cart to <code>productListItems</code> with a Custom Code data element:</div>
+<div class="code"><button class="copy">Copy</button><pre>var dl = (window.digitalData &amp;&amp; window.digitalData.product) || [];
+return (Array.isArray(dl) ? dl : [dl])
+  .filter(function (p) { return p &amp;&amp; p.sku &amp;&amp; p.name; })
+  .map(function (p) {
+    return { SKU: p.sku, name: p.name, quantity: p.quantity || 1,
+             priceTotal: (p.price || 0) * (p.quantity || 1) };
+  });</pre></div></div><figure class="fig-svg"><svg viewBox="0 0 700 296" role="img" aria-label="Five variable groups map to schema nodes"><defs><marker id="avg8" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="var(--accent)"></path></marker><marker id="mvg8" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="var(--faint)"></path></marker><marker id="ovg8" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="var(--ok)"></path></marker><marker id="dvg8" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="var(--danger)"></path></marker></defs><text x="120" y="26" text-anchor="middle" font-size="11.5" font-weight="700" letter-spacing=".3" fill="var(--muted)">FIVE GROUPS</text><text x="510" y="26" text-anchor="middle" font-size="11.5" font-weight="700" letter-spacing=".3" fill="var(--accent)">SCHEMA NODE</text><rect x="30" y="50" width="180" height="34" rx="7" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"></rect><text x="46" y="72" font-size="11" fill="var(--ink-soft)">OOTB / standard</text><line x1="210" y1="67" x2="356" y2="67" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#avg8)"></line><rect x="360" y="50" width="300" height="34" rx="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect><text x="376" y="72" font-size="11" class="mn" fill="var(--accent)">web.webPageDetails.*</text><rect x="30" y="98" width="180" height="34" rx="7" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"></rect><text x="46" y="120" font-size="11" fill="var(--ink-soft)">eVars</text><line x1="210" y1="115" x2="356" y2="115" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#avg8)"></line><rect x="360" y="98" width="300" height="34" rx="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect><text x="376" y="120" font-size="11" class="mn" fill="var(--accent)">...customDimensions.eVars</text><rect x="30" y="146" width="180" height="34" rx="7" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"></rect><text x="46" y="168" font-size="11" fill="var(--ink-soft)">props / list props</text><line x1="210" y1="163" x2="356" y2="163" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#avg8)"></line><rect x="360" y="146" width="300" height="34" rx="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect><text x="376" y="168" font-size="11" class="mn" fill="var(--accent)">...customDimensions.props</text><rect x="30" y="194" width="180" height="34" rx="7" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"></rect><text x="46" y="216" font-size="11" fill="var(--ink-soft)">events</text><line x1="210" y1="211" x2="356" y2="211" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#avg8)"></line><rect x="360" y="194" width="300" height="34" rx="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect><text x="376" y="216" font-size="11" class="mn" fill="var(--accent)">...event1to100.*</text><rect x="30" y="242" width="180" height="34" rx="7" fill="var(--bg)" stroke="var(--line)" stroke-width="1.4"></rect><text x="46" y="264" font-size="11" fill="var(--ink-soft)">products</text><line x1="210" y1="259" x2="356" y2="259" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#avg8)"></line><rect x="360" y="242" width="300" height="34" rx="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.3"></rect><text x="376" y="264" font-size="11" class="mn" fill="var(--accent)">productListItems[]</text></svg><figcaption>Variables of the same kind map the same way, learn the pattern once per group, then it is repetition.</figcaption></figure><div class="call mistake"><span class="ct">⚠ Common mistake</span><p>Forcing product-scoped <b>merchandising eVars</b> into <code>productListItems</code> and losing days to it. They don't ride that structure cleanly, pass them via the delimited <code>data.__adobe.analytics.products</code> string instead<a class="cite" href="/web-sdk-migration/references/#ref-36" data-ref="36">[36]</a>.</p></div><div class="call check"><span class="ct">✓ You should see</span><p>In the Debugger payload: your mapped nodes under <code>xdm._experience.analytics...</code> and <code>productListItems</code> as an array of objects.</p></div>

@@ -1,0 +1,23 @@
+---
+title: "Schema & XDM"
+seotitle: "XDM Schemas for Adobe Web SDK"
+description: "What an XDM schema is and the shape all Web SDK data must take when migrating from AppMeasurement."
+slug: "schema"
+type: kb
+weight: 102
+params:
+  group: concepts
+  grouplabel: "Concepts"
+  hasfull: true
+---
+<p class="khook">A schema is the blueprint of your data. Like an architect's drawing of a house, it holds nothing itself; there's no furniture in a blueprint, yet it decides where every room and doorway goes, and once built, you live inside those decisions every day.</p>
+<p>In Experience Platform, the schema defines the exact shape every event must take before the Edge will accept it: which fields exist, what type each is, and where each value belongs. <b>XDM</b> (Experience Data Model) is the shared vocabulary those fields are drawn from, the standard that lets Analytics, CJA, and AEP all read the same structure.</p>
+<p>Concretely: you pick the <b>Experience Event</b> class (time-series behaviour), then add field groups that contribute fields. The Edge rejects, drops, any payload that doesn't conform, which is why validation later leans so heavily on schema checks.</p>
+<p><b>For your migration:</b> a clean, well-structured schema is what makes today's Analytics effortless and tomorrow's CJA a "connect the dataset" job rather than a re-instrumentation. The schema is the contract every event signs.</p><div class="arch"><span class="at">⚑ Architect's Decision</span><p>Use the Experience Event class. Keep the schema clean and minimal, treat every field as a long-term commitment, and never enable Profile until validated.</p></div><section class="kb-full-static"><div class="fulltag">Full detail, the complete reference</div><h3>Class, then field groups</h3>
+<p>An XDM schema is built in two layers. First a <b>class</b> sets the fundamental behaviour: <b>Experience Event</b> for time-series things that happen at a moment (page views, clicks, purchases) or <b>Individual Profile</b> for slow-changing attributes about a person. Web analytics is overwhelmingly event data, so you choose Experience Event. Then <b>field groups</b> contribute the actual fields, reusable bundles you snap onto the class like pre-drawn room templates onto a floor plan.</p>
+<h3>The field group that does the work</h3>
+<p>For an Analytics migration the load-bearing field group is the <b>Adobe Analytics ExperienceEvent Full Extension</b><a class="cite" href="/web-sdk-migration/references/#ref-3" data-ref="3">[3]</a>. It contributes the entire <code>_experience.analytics</code> structure, eVars, props, list props, events, hierarchies, and the Edge knows how to translate those fields straight into your Analytics variables with no processing rules. Add it and most mapping is drag-and-drop; omit it and you hand-wire every variable later.</p>
+<h3>The a.x. escape hatch</h3>
+<p>Anything you model in a <i>custom</i> field group of your own does not auto-map. It arrives in Analytics as a context-data variable prefixed <code>a.x.</code>, for example a custom field surfaces as <code>a.x.&lt;tenant&gt;.&lt;field&gt;</code>, and the ECID shows up at <code>a.x.identitymap.ecid.0.id</code><a class="cite" href="/web-sdk-migration/references/#ref-36" data-ref="36">[36]</a>. You then place it into a variable with a processing rule. This is occasionally exactly what you want, but for standard eVars and events it's avoidable work.</p>
+<h3>The schema is a contract</h3>
+<p>Validation is strict: the Edge <b>drops</b> any payload that violates the schema, and Assurance will name the offending field. That strictness is a feature; it's what guarantees clean data downstream, but it means schema design and validation are tightly linked. And remember the Profile toggle on the schema root: leave it off until you've validated for weeks, because enabling it locks the schema permanently.</p></section>
