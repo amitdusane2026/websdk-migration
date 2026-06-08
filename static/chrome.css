@@ -1,0 +1,87 @@
+/* Site-wide chrome: the bottom-right author popup, plus the GLOBAL (non-migration)
+   home + About styling. Migration pages get their shell from world-shell.css. */
+
+/* ---- author fab + About overlay (universal, bottom-right) ---- */
+.author-fab{position:fixed;bottom:24px;right:24px;width:54px;height:54px;border-radius:50%;background:#e11d48;color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(225,29,72,.4);z-index:55;transition:transform .18s,box-shadow .18s}
+.author-fab:hover{transform:scale(1.08);box-shadow:0 9px 24px rgba(225,29,72,.5)}
+.author-fab svg{width:25px;height:25px}
+.about-overlay{position:fixed;inset:0;z-index:90;background:rgba(15,18,23,.5);display:none;justify-content:center;align-items:center;padding:24px}
+.about-overlay:not([hidden]){display:flex}
+[data-theme="dark"] .about-overlay{background:rgba(0,0,0,.62)}
+.about-card{position:relative;background:var(--bg);color:var(--ink);max-width:560px;width:100%;max-height:88vh;overflow-y:auto;border-radius:16px;padding:34px 34px 30px;box-shadow:0 30px 80px rgba(0,0,0,.34);border:1px solid var(--line)}
+.about-x{position:absolute;top:14px;right:16px;border:none;background:none;font-size:26px;line-height:1;color:var(--faint);cursor:pointer;padding:4px}
+.about-x:hover{color:var(--ink)}
+.about-head{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.about-avatar{flex:none;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#fb5277,#e11d48);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:21px;letter-spacing:.5px}
+.about-name{font-size:21px;font-weight:800;color:var(--ink)}
+.about-role{font-size:13px;color:#e11d48;font-weight:600;margin-top:3px}
+.about-body p{font-size:15px;line-height:1.7;color:var(--ink-soft);margin:0 0 14px}
+.about-cta{display:inline-flex;align-items:center;gap:6px;margin-top:6px;color:#fff;background:#e11d48;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:700;text-decoration:none}
+.about-cta:hover{background:#c1133b}
+.about-foot{margin-top:14px;font-size:12.5px}
+.about-foot a{color:var(--accent)}
+@media(max-width:560px){.author-fab{width:48px;height:48px;bottom:18px;right:18px}}
+@media print{.author-fab,.about-overlay{display:none !important}}
+
+/* ---- GLOBAL shell (home, About, 404): slim top, no toggle/search/print ---- */
+.gtop{display:flex;align-items:center;height:60px;padding:0 26px;border-bottom:1px solid var(--line);background:var(--bg)}
+.gbrand{font-size:15px;font-weight:700;letter-spacing:.2px;color:var(--ink);text-decoration:none}
+.gbrand:hover{color:#e11d48}
+.gmain{max-width:980px;margin:0 auto;padding:34px 26px 90px}
+.gfoot{max-width:980px;margin:30px auto 0;padding:20px 26px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.gfoot b{color:#e11d48}
+.gfoot a{color:var(--accent);text-decoration:none}
+.gfoot .sep{color:var(--faint);margin:0 7px}
+
+/* ---- GLOBAL HOME: profile (left, fixed) + topic cards (right, scroll) ---- */
+.home2{display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:start}
+.h2-profile{position:sticky;top:84px}
+.h2-name{font-size:27px;font-weight:800;letter-spacing:-.3px;color:var(--ink)}
+.h2-role{font-size:14px;color:var(--ink-soft);margin-top:6px;line-height:1.5}
+.h2-sum{font-size:14px;color:var(--muted);line-height:1.65;margin:16px 0}
+.h2-facts{display:flex;flex-direction:column;gap:7px;margin:16px 0 20px}
+.h2-facts span{font-size:13px;color:var(--ink-soft)}
+.h2-facts b{color:#e11d48;font-weight:700;margin-right:5px}
+.h2-about{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:9px;padding:9px 16px;font-size:13.5px;color:var(--ink);text-decoration:none}
+.h2-about:hover{border-color:#e11d48;color:#e11d48}
+.h2-topics-h{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--faint);font-weight:800;margin-bottom:14px}
+.tcard{display:block;border:1px solid var(--line);border-radius:14px;padding:22px 24px;text-decoration:none;margin-bottom:16px;background:var(--bg);border-left:4px solid var(--tcolor,#1f5fae)}
+.tcard:hover{box-shadow:0 6px 22px rgba(16,24,40,.08)}
+.tcard .tc-h{display:flex;align-items:center;gap:10px}
+.tcard .tc-t{font-size:18px;font-weight:800;color:var(--ink)}
+.tcard .tc-tag{font-size:11px;font-weight:700;border-radius:999px;padding:3px 10px;color:var(--tcolor,#1f5fae);background:var(--tbg,#eaf1fb)}
+.tcard .tc-d{font-size:14px;color:var(--muted);margin-top:8px;line-height:1.6}
+.tcard .tc-go{font-size:13.5px;color:var(--tcolor,#1f5fae);font-weight:600;margin-top:14px;display:inline-block}
+@media(max-width:760px){.home2{grid-template-columns:1fr;gap:24px}.h2-profile{position:static}}
+
+/* ---- GLOBAL About page (universal) — ported from the app ---- */
+.author-page{max-width:720px;margin:0 auto}
+.author-header{text-align:center;padding:10px 0 30px;border-bottom:1px solid var(--line);margin-bottom:30px}
+.author-title{font-size:30px;font-weight:800;margin-bottom:8px;color:#e11d48}
+.author-subtitle{font-size:14px;color:var(--ink-soft);margin-bottom:5px;line-height:1.5}
+.author-exp{font-size:13px;color:var(--muted)}
+.author-links{display:flex;justify-content:center;gap:12px;margin-top:18px}
+.author-link{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--ink);text-decoration:none;font-size:13px}
+.author-link:hover{border-color:#e11d48;color:#e11d48}
+.author-section{margin-bottom:28px}
+.author-section-title{font-size:18px;font-weight:700;margin-bottom:12px;color:var(--ink)}
+.author-section p{font-size:14.5px;color:var(--ink-soft);line-height:1.7;margin:0 0 12px}
+.author-list{list-style:none;padding:0;margin:12px 0}
+.author-list li{font-size:13.5px;color:var(--ink-soft);padding:6px 0 6px 22px;position:relative}
+.author-list li::before{content:"\2192";position:absolute;left:0;color:#e11d48;font-weight:700}
+.company-list{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.company-tag{background:var(--bg);border:1px solid var(--line);padding:6px 12px;border-radius:6px;font-size:12px;color:var(--ink-soft)}
+.company-tag.adobe{background:#fdeef2;color:#e11d48;font-weight:600;border-color:#f7cdd8}
+.cert-badge{display:flex;align-items:center;gap:16px;background:var(--bg);border:1px solid var(--line);padding:16px;border-radius:9px;margin:8px 0}
+.cert-icon{font-size:30px;line-height:1}
+.cert-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+.cert-id{font-size:12px;color:var(--muted)}
+
+/* polish: clearer back link + standout topic cards */
+.gback{font-size:14px;font-weight:600}
+.h2-topics-note{font-size:13.5px;color:var(--muted);margin:-6px 0 16px}
+.tcard{border:1.5px solid var(--tcolor,#1f5fae);background:var(--tbg,#eaf1fb);transition:transform .15s,box-shadow .15s}
+.tcard:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(31,95,174,.20)}
+.tcard .tc-tag{background:#fff}
+.tcard .tc-go{font-weight:700}
+.tcard .tc-d{color:var(--ink-soft)}

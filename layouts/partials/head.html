@@ -2,7 +2,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {{- /* Pre-paint: set theme before first paint to avoid a flash. Must stay inline + first. */ -}}
-  <script>(function(){try{var t=localStorage.getItem('site-theme');if(t!=='dark'&&t!=='light')t='light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+  <script>(function(){try{var t=localStorage.getItem('site-theme');if(t!=='dark'&&t!=='light')t='light';var d=document.documentElement;d.setAttribute('data-theme',t);d.style.colorScheme=t;}catch(e){document.documentElement.setAttribute('data-theme','light');document.documentElement.style.colorScheme='light';}})();</script>
   {{ template "_internal/google_analytics.html" . }}
   {{- /* Per-page title + description. Real query-intent versions land in Phase 4. */ -}}
   <title>{{ if .Params.seotitle }}{{ .Params.seotitle }}{{ else if .IsHome }}{{ .Site.Title }} · Adobe Experience Platform{{ else }}{{ .Title }} · {{ .Site.Title }}{{ end }}</title>
@@ -12,6 +12,7 @@
   <link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
   <link rel="icon" href="{{ "favicon-32.png" | relURL }}" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
+  <link rel="stylesheet" href="{{ "chrome.css" | relURL }}">
   {{- $ogtitle := cond (ne (string .Params.seotitle) "") (string .Params.seotitle) (printf "%s · %s" .Title .Site.Title) -}}
   {{- $ogdesc := cond (ne (string .Description) "") (string .Description) (.Summary | plainify | truncate 150) -}}
   <meta property="og:type" content="{{ if .IsHome }}website{{ else }}article{{ end }}">
@@ -25,7 +26,7 @@
   <meta name="twitter:description" content="{{ $ogdesc }}">
   <meta name="twitter:image" content="{{ "og-default.jpg" | absURL }}">
   {{ partial "schema.html" . }}
-  {{ if hasPrefix .RelPermalink "/web-sdk-migration" }}<link rel="stylesheet" href="{{ "guide.css" | relURL }}">{{ end }}
+  {{ if hasPrefix .RelPermalink "/web-sdk-migration" }}<link rel="stylesheet" href="{{ "world-shell.css" | relURL }}">{{ else }}
   <style>
   :root{
     --ink:#1c1f24; --ink-soft:#3b4048; --muted:#6b7280; --faint:#9aa1ab;
@@ -130,4 +131,5 @@
   .sresult mark{background:var(--accent-soft);color:var(--accent);border-radius:3px;padding:0 1px}
   @media(max-width:560px){ .search-btn .sl,.search-btn .sk{display:none} .search-btn{width:34px;padding:0;justify-content:center} }
   </style>
+  {{ end }}
 </head>

@@ -1,7 +1,1 @@
-{{ define "main" }}
-  <p class="crumb"><a href="{{ "/" | relURL }}">Home</a>{{ with .CurrentSection }} &rsaquo; <a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }} &rsaquo; {{ .Title }}</p>
-  <article>
-    <h1>{{ .Title }}</h1>
-    {{ .Content }}
-  </article>
-{{ end }}
+{{ define "main" }}{{ .Content }}{{ end }}

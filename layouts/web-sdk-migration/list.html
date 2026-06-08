@@ -1,31 +1,24 @@
 {{ define "main" }}
 {{ $steps := (where .Site.RegularPages "Type" "step").ByWeight }}
 {{ $first := index $steps 0 }}
-<p class="crumb"><a href="{{ "/" | relURL }}">Home</a> &rsaquo; Web SDK Migration</p>
-<article class="guide">
-  <div class="eyebrow" style="color:var(--accent);font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700">Migration Guide</div>
-  <h1>{{ .Title }}</h1>
-  <p class="lead">{{ .Content | plainify }}</p>
-
-  <div class="g-stats">
-    <span><b>13</b> steps</span><span><b>24</b> KB topics</span><span><b>42</b> references</span><span><b>20</b> diagrams</span>
+<section class="view active">
+  <div class="home">
+    <span class="home-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h13M12 6l6 6-6 6"/></svg></span>
+    <h1 class="home-title"><span class="ht-line">AppMeasurement <span class="arrow">&rarr;</span> Web SDK</span><span class="home-title-mg">Migration Guide</span></h1>
+    <p class="home-sub">A decision-led, field-tested guide to migrating from AppMeasurement to the Adobe Experience Platform Web SDK: the architectural calls, the gotchas, and the order to make them in.</p>
+    <div class="home-stats">
+      <div class="hstat"><div class="hn">13</div><div class="hl">Steps</div></div>
+      <div class="hstat"><div class="hn">24</div><div class="hl">KB topics</div></div>
+      <div class="hstat"><div class="hn">42</div><div class="hl">Sources</div></div>
+    </div>
+    <a class="home-cta" href="{{ $first.RelPermalink }}">Start migration &rarr;</a>
+    <div class="home-scope">Built from real implementations. Targets the Web SDK (alloy.js) on Adobe Experience Platform; your report suite, classifications, marketing channels, and segments stay server-side.</div>
   </div>
-
-  <div class="g-cta">
-    <a class="cta-primary" href="{{ $first.RelPermalink }}">Start the guide &rarr;</a>
-    <a class="cta-second" href="{{ "/web-sdk-migration/kb/" | relURL }}">Knowledge Base</a>
-    <a class="cta-second" href="{{ "/web-sdk-migration/references/" | relURL }}">References</a>
+  <div class="guide-why">
+    <div class="author-section-title">Why I built this guide</div>
+    <p>The migration from AppMeasurement to the Web SDK is not a script swap; it is a shift in where the work happens, off the visitor's browser and onto Adobe's Edge. The official documentation covers each piece, but it is scattered across dozens of pages with no opinion about what to do first or which mistakes will cost you weeks.</p>
+    <div class="author-quote"><p>This guide is the reference I wish I had on my first migration. It is built from real implementations, not theory, and it assumes you already know Adobe Analytics and respects your time. The aim is not to explain the basics; it is to give you the architectural decisions, the order to make them in, and the gotchas that do not surface until production.</p></div>
+    <p>If it helps you migrate with confidence, sidestep the visitor cliff, and ship without surprises, then it has done its job.</p>
   </div>
-
-  <h2>The 13 steps</h2>
-  <ol class="g-steplist">
-    {{ range $steps }}<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>{{ end }}
-  </ol>
-
-  <div class="g-download">
-    <div class="gd-t">Prefer a single file?</div>
-    <p>The entire guide is also available as one self-contained, offline HTML file — no internet, no trackers, nothing external. Open it in any browser or keep it for reference.</p>
-    <a class="gd-btn" href="{{ "appmeasurement-to-web-sdk-guide-offline.html" | relURL }}" download>&darr; Download the offline single-file guide</a>
-  </div>
-</article>
+</section>
 {{ end }}
